@@ -1,0 +1,60 @@
+---
+title: "DataOps"
+# subtitle: "My Visuan"
+author: "Karen Hovhannisyan"
+date: last-modified
+image_path: "img/"
+format:
+  revealjs: 
+    touch: true
+    slide-number: false
+    chalkboard: true
+    preview-links: auto
+    width: 1500
+    transition: slide
+    logo: img/favicon.png
+    include-in-header:
+      - text: |
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+          <link rel = "stylesheet" href = "styles/mermaid-theme.css">
+          <style>
+            .icon-xxl { font-size: 84px; }
+            .icon-xl  { font-size: 64px; }
+            .icon-lg  { font-size: 48px; }
+            .muted { opacity: .8 }
+            .pill { border-radius: 10px; }
+            .circle { border-radius: 50%; }
+          </style>
+    
+---
+## Objective {.smaller}
+- Transform data into a **strategic banking asset**  
+- Eliminate **data silos** and enable **integrated decision-making**  
+- Build a **scalable, governed, and AI-ready organization**
+## The Core Problem: Data Silos {.smaller}
+- **Fragmented systems across:**
+  - Core banking  
+  - CRM  
+  - Risk  
+  - Marketing  
+  - Other Sources
+- **Consequences:**
+  - Inconsistent KPIs  
+  - Slow decision-making  
+  - Poor customer experience  
+  - Limited AI capability 
+  - Missing Single Source of Truth 
+## Data Silos in Banking {.smaller}
+Show less
+
+
+
+
+
+
+
+
+
+
+
+
