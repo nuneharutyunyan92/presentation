@@ -50,6 +50,7 @@ format:
   - Missing Single Source of Truth 
 
 ## Data Silos in Banking {.smaller}
+
 Show less
 
 
