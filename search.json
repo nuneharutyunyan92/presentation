@@ -1,23 +1,282 @@
 [
   {
+    "objectID": "index.html#project-overview",
+    "href": "index.html#project-overview",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Project Overview",
+    "text": "Project Overview\nThis project analyzes Jersey City Citi Bike trips (Feb 2025 – Jun 2026) by combining trip, weather, and geographic data into a single PostgreSQL/PostGIS database, then visualized in Tableau."
+  },
+  {
     "objectID": "index.html#objective",
     "href": "index.html#objective",
-    "title": "DataOps",
+    "title": "Citi Bike Jersey City 2025-2026",
     "section": "Objective",
-    "text": "Objective\n\nTransform data into a strategic banking asset\n\nEliminate data silos and enable integrated decision-making\n\nBuild a scalable, governed, and AI-ready organization"
+    "text": "Objective\n\nDownload data from multiple web sources\nClean and prepare data with Python\nPerform exploratory and spatial analysis\nStore processed data in PostgreSQL/PostGIS\nBuild a dashboard-ready Materialized View\nConnect Tableau to PostgreSQL\nCreate a Tableau Extract\nBuild an interactive analytics dashboard"
   },
   {
-    "objectID": "index.html#the-core-problem-data-silos",
-    "href": "index.html#the-core-problem-data-silos",
-    "title": "DataOps",
-    "section": "The Core Problem: Data Silos",
-    "text": "The Core Problem: Data Silos\n\nFragmented systems across:\n\nCore banking\n\nCRM\n\nRisk\n\nMarketing\n\nOther Sources\n\nConsequences:\n\nInconsistent KPIs\n\nSlow decision-making\n\nPoor customer experience\n\nLimited AI capability\nMissing Single Source of Truth"
+    "objectID": "index.html#end-to-end-analytics-workflow",
+    "href": "index.html#end-to-end-analytics-workflow",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "End-to-End Analytics Workflow",
+    "text": "End-to-End Analytics Workflow\n\n\n\n\n\nflowchart LR\n    A[Citi Bike ZIP Files] --&gt; D[Python]\n    B[Weather API] --&gt; D\n    C[Neighborhood GeoJSON] --&gt; D\n    D --&gt; E[(PostgreSQL / PostGIS)]\n    E --&gt; F[Materialized View]\n    F --&gt; G[Tableau]\n    G --&gt; H[Tableau Extract]\n    H --&gt; I[Interactive Dashboard]"
   },
   {
-    "objectID": "index.html#data-silos-in-banking",
-    "href": "index.html#data-silos-in-banking",
-    "title": "DataOps",
-    "section": "Data Silos in Banking",
-    "text": "Data Silos in Banking\nShow less"
+    "objectID": "index.html#technologies-used",
+    "href": "index.html#technologies-used",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Technologies Used",
+    "text": "Technologies Used\n\n\n\n Python — data collection, preparation, analysis\n pandas — tabular data manipulation\n GeoPandas — geospatial analysis\n Requests — downloading data and calling APIs\n PostgreSQL — analytical database\n\n\n\n PostGIS — spatial database extension\n SQLAlchemy — Python database integration\n Docker — PostgreSQL/PostGIS environment\n Tableau — dashboard development\n GitHub — project version control"
+  },
+  {
+    "objectID": "index.html#downloading-data-from-the-web",
+    "href": "index.html#downloading-data-from-the-web",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "1. Downloading Data from the Web",
+    "text": "1. Downloading Data from the Web\nThe project starts with three independent external data sources.\nCiti Bike Trip Data\n\nMonthly Citi Bike ZIP files\n17 monthly datasets (February 2025 – June 2026)\nEach ZIP file contains CSV trip records\nJersey City trips only"
+  },
+  {
+    "objectID": "index.html#downloading-citi-bike-data-implementation",
+    "href": "index.html#downloading-citi-bike-data-implementation",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Downloading Citi Bike Data: Implementation",
+    "text": "Downloading Citi Bike Data: Implementation\nfrom pathlib import Path\nfrom urllib.request import urlretrieve\nfrom zipfile import ZipFile\nfrom urllib.error import HTTPError, URLError\n\nCITIBIKE_INDEX_URL = \"https://s3.amazonaws.com/tripdata\"\nOUTPUT_DIR = \"../data/JC\"\noutput_dir = Path(OUTPUT_DIR)\noutput_dir.mkdir(exist_ok=True)\n\n# PERIODS = list of \"YYYYMM\" strings, e.g. \"202502\" ... \"202606\"\nfor i in PERIODS:\n\n    try:\n        file_name = f\"JC-{i}-citibike-tripdata.csv.zip\"\n        url = f\"{CITIBIKE_INDEX_URL}/{file_name}\"\n        zip_path = output_dir / file_name\n        urlretrieve(url, zip_path)\n\n    except (HTTPError, URLError, FileNotFoundError):\n        file_name = f\"JC-{i}-citibike-tripdata.zip\"\n        url = f\"{CITIBIKE_INDEX_URL}/{file_name}\"\n        zip_path = output_dir / file_name\n        urlretrieve(url, zip_path)\n\n    with ZipFile(zip_path, \"r\") as zip_ref:\n        zip_ref.extractall(output_dir)\n    print(f'{file_name}  Extracted')\n    zip_path.unlink()\n    print(f\"{file_name} removed.\")"
+  },
+  {
+    "objectID": "index.html#citi-bike-trip-data-1",
+    "href": "index.html#citi-bike-trip-data-1",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Citi Bike Trip Data",
+    "text": "Citi Bike Trip Data\nThe Citi Bike dataset contains individual bicycle trips.\nImportant Variables\n\nride_id\nrideable_type\nstarted_at\nended_at\nstart_station_name\nend_station_name\nstart_lat\nstart_lng\nend_lat\nend_lng\nmember_casual\n\nEach row represents one Citi Bike trip."
+  },
+  {
+    "objectID": "index.html#weather-data",
+    "href": "index.html#weather-data",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Weather Data",
+    "text": "Weather Data\n\nOpen-Meteo Historical Weather API\nDaily weather observations\nJSON response converted to tabular format"
+  },
+  {
+    "objectID": "index.html#weather-data-implementation",
+    "href": "index.html#weather-data-implementation",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Weather Data: Implementation",
+    "text": "Weather Data: Implementation\nimport pandas as pd\nimport requests\n\nlat = 40.7178\nlng = -74.0431\n\nstart_date = \"2025-01-01\"\nend_date = \"2025-12-31\"\n\nurl = \"https://archive-api.open-meteo.com/v1/archive\"\n\nparams = {\n    \"latitude\": lat,\n    \"longitude\": lng,\n    \"start_date\": start_date,\n    \"end_date\": end_date,\n    \"daily\": [\n        \"temperature_2m_max\",\n        \"temperature_2m_min\",\n        \"temperature_2m_mean\",\n        \"precipitation_sum\",\n        \"rain_sum\",\n        \"snowfall_sum\",\n        \"wind_speed_10m_max\"\n    ],\n    \"timezone\": \"America/New_York\"\n}\n\nresponse = requests.get(url, params=params)\nresponse.raise_for_status()\n\ndata = response.json()\n\nweather_daily = pd.DataFrame(data[\"daily\"])\nweather_daily[\"date\"] = pd.to_datetime(weather_daily[\"time\"])\nweather_daily = weather_daily.drop(columns=\"time\")\n\nweather_daily.head()"
+  },
+  {
+    "objectID": "index.html#weather-data-1",
+    "href": "index.html#weather-data-1",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Weather Data",
+    "text": "Weather Data\nWeather information is retrieved using the Open-Meteo API.\nDaily Weather Variables\n\nMean temperature\nMaximum temperature\nMinimum temperature\nPrecipitation\nRain\nSnowfall\nMaximum wind speed"
+  },
+  {
+    "objectID": "index.html#neighborhood-geographic-data",
+    "href": "index.html#neighborhood-geographic-data",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Neighborhood Geographic Data",
+    "text": "Neighborhood Geographic Data\nThe neighborhood dataset contains Jersey City polygon boundaries in GeoJSON format.\n\nJersey City neighborhood GeoJSON\nPolygon boundaries used for spatial analysis"
+  },
+  {
+    "objectID": "index.html#preparing-the-data",
+    "href": "index.html#preparing-the-data",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "2. Preparing the Data",
+    "text": "2. Preparing the Data\nThe raw datasets cannot be analyzed directly.\nA data preparation pipeline is created in Python.\nMain Preparation Steps\n\nExtract ZIP files\nLoad CSV files\nCombine monthly trip datasets\nRename and standardize columns\nConvert data types\nParse dates and timestamps\nRemove duplicates\nValidate coordinates\nHandle missing values\nStandardize formats"
+  },
+  {
+    "objectID": "index.html#cleaning-citi-bike-data",
+    "href": "index.html#cleaning-citi-bike-data",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Cleaning Citi Bike Data",
+    "text": "Cleaning Citi Bike Data\nExample Python workflow:\nimport pandas as pd\n\ncitibike_df[\"started_at\"] = pd.to_datetime(\n    citibike_df[\"started_at\"]\n)\n\ncitibike_df[\"ended_at\"] = pd.to_datetime(\n    citibike_df[\"ended_at\"]\n)\n\ncitibike_df = citibike_df.drop_duplicates(\n    subset=\"ride_id\"\n)\nThe main goal is to produce a consistent dataset before beginning the analysis."
+  },
+  {
+    "objectID": "index.html#feature-engineering",
+    "href": "index.html#feature-engineering",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Feature Engineering",
+    "text": "Feature Engineering\nSeveral analytical variables are created from the original trip data.\n\n\nTime Features\n\nRide date\nYear\nQuarter\nMonth\nDay of week\nHour\nWeekend / weekday\n\n\nRide Features\n\nRide duration\nDistance\nDistance category\nDuration category\n\n\nWeather Features\n\nRain flag\nTemperature category\nWeather conditions"
+  },
+  {
+    "objectID": "index.html#example-ride-duration",
+    "href": "index.html#example-ride-duration",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Example: Ride Duration",
+    "text": "Example: Ride Duration\ncitibike_df[\"duration_min\"] = (\n    citibike_df[\"ended_at\"]\n    - citibike_df[\"started_at\"]\n).dt.total_seconds() / 60\nRide duration allows us to analyze how long users typically keep a Citi Bike."
+  },
+  {
+    "objectID": "index.html#analysis-with-python",
+    "href": "index.html#analysis-with-python",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "3. Analysis with Python",
+    "text": "3. Analysis with Python\nPython is used for the initial exploratory analysis before building the Tableau dashboard.\nMain Analysis Areas\n\nExploratory Data Analysis\nTrip trends\nMember behavior\nBike type usage\nStation activity\nSpatial patterns\nWeather impact\nFeature engineering"
+  },
+  {
+    "objectID": "index.html#exploratory-data-analysis",
+    "href": "index.html#exploratory-data-analysis",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Exploratory Data Analysis",
+    "text": "Exploratory Data Analysis\nThe first stage focuses on understanding the structure and quality of the dataset.\nQuestions\n\nHow many trips were recorded?\nAre there missing values?\nAre there duplicate rides?\nWhat is the typical trip duration?\nWhich stations are most frequently used?\nHow does activity change during the year?"
+  },
+  {
+    "objectID": "index.html#time-trend-analysis",
+    "href": "index.html#time-trend-analysis",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Time Trend Analysis",
+    "text": "Time Trend Analysis\nTrip activity is analyzed across different time dimensions.\nTime Aggregations\n\nDaily rides\nMonthly rides\nRides by hour\nRides by weekday\nSeasonal activity\n\nThis helps identify commuting patterns and seasonal differences in bike usage."
+  },
+  {
+    "objectID": "index.html#member-vs-casual-riders",
+    "href": "index.html#member-vs-casual-riders",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Member vs Casual Riders",
+    "text": "Member vs Casual Riders\nCiti Bike users are divided into two main categories:\n\n\nMember\n\nSubscription-based users\nMore frequent usage\nOften associated with commuting behavior\n\n\nCasual\n\nNon-subscription riders\nMore recreational usage\nPotentially more sensitive to weather and seasonality"
+  },
+  {
+    "objectID": "index.html#station-analysis",
+    "href": "index.html#station-analysis",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Station Analysis",
+    "text": "Station Analysis\nStation activity is analyzed using both departure and arrival information.\nMetrics\n\nNumber of departures\nNumber of arrivals\nTotal station activity\nMost popular start stations\nMost popular end stations\n\nThis can help identify high-demand areas in the Citi Bike network."
+  },
+  {
+    "objectID": "index.html#spatial-analysis",
+    "href": "index.html#spatial-analysis",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Spatial Analysis",
+    "text": "Spatial Analysis\nLatitude and longitude coordinates allow us to perform geographic analysis.\nSpatial Operations\n\nConvert stations into geographic points\nLoad neighborhood polygons\nPerform spatial joins\nAssign stations to neighborhoods\nAggregate rides by neighborhood\n\nExample:\nstations_with_neighborhood = gpd.sjoin(\n    stations_gdf,\n    neighborhoods_gdf,\n    predicate=\"within\"\n)"
+  },
+  {
+    "objectID": "index.html#weather-impact-analysis",
+    "href": "index.html#weather-impact-analysis",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Weather Impact Analysis",
+    "text": "Weather Impact Analysis\nWeather data is combined with daily Citi Bike activity.\nQuestions\n\nDoes temperature affect the number of rides?\nHow does rainfall influence demand?\nAre rides lower on snowy days?\nDoes wind speed influence activity?\n\nThe relationship between temperature and daily rides is particularly useful for understanding seasonal demand."
+  },
+  {
+    "objectID": "index.html#creating-the-citi-bike-database",
+    "href": "index.html#creating-the-citi-bike-database",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "4. Creating the Citi Bike Database",
+    "text": "4. Creating the Citi Bike Database\nAfter the Python analysis, cleaned datasets are stored in PostgreSQL.\nPostGIS is enabled to support geographic data.\nDatabase\n\nDatabase name: citibike\nDatabase engine: PostgreSQL\nSpatial extension: PostGIS\nEnvironment: Docker container"
+  },
+  {
+    "objectID": "index.html#database-structure",
+    "href": "index.html#database-structure",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Database Structure",
+    "text": "Database Structure\nMain database tables:\n\n\n\nTable\nDescription\n\n\n\n\njersey_city\nIndividual Citi Bike trips\n\n\njersey_weather\nDaily weather observations\n\n\njersey_city_neighborhoods\nNeighborhood polygons\n\n\njc_stations\nCiti Bike station locations\n\n\n\nThe database separates raw analytical entities while SQL is used to combine them for reporting."
+  },
+  {
+    "objectID": "index.html#postgresql-postgis",
+    "href": "index.html#postgresql-postgis",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "PostgreSQL + PostGIS",
+    "text": "PostgreSQL + PostGIS\nPostGIS extends PostgreSQL with geographic functionality.\nExample spatial operation:\nSELECT\n    s.station_name,\n    n.neighborhood\nFROM jc_stations AS s\nLEFT JOIN jersey_city_neighborhoods AS n\n    ON ST_Within(\n        s.geometry,\n        n.geometry\n    );\nThis assigns each station to its corresponding Jersey City neighborhood."
+  },
+  {
+    "objectID": "index.html#dashboard-ready-materialized-view",
+    "href": "index.html#dashboard-ready-materialized-view",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "5. Dashboard-Ready Materialized View",
+    "text": "5. Dashboard-Ready Materialized View\nInstead of asking Tableau to repeatedly join multiple large tables, a Materialized View is created.\nCREATE MATERIALIZED VIEW\nmv_tableau_citibike_dashboard\nAS\n\nSELECT\n    ...\nFROM jersey_city AS rides\n\nLEFT JOIN jersey_weather AS weather\n    ON rides.ride_date = weather.date;\nThe view becomes the main analytical dataset for Tableau."
+  },
+  {
+    "objectID": "index.html#why-use-a-materialized-view",
+    "href": "index.html#why-use-a-materialized-view",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Why Use a Materialized View?",
+    "text": "Why Use a Materialized View?\nA Materialized View stores the result of the analytical query physically in PostgreSQL.\nBenefits\n\nFaster Tableau queries\nCentralized business logic\nReusable analytical dataset\nLess processing inside Tableau\nEasier dashboard maintenance\nConsistent calculations\n\nThe final dataset follows a wide-table structure designed specifically for dashboard analysis."
+  },
+  {
+    "objectID": "index.html#dashboard-dataset",
+    "href": "index.html#dashboard-dataset",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Dashboard Dataset",
+    "text": "Dashboard Dataset\nThe Materialized View contains both original and derived variables.\n\n\nExample Fields\n\nRide ID\nRide date\nMonth\nHour\nDay of week\nMember type\nBike type\nDuration\n\n\nExample Fields\n\nDistance\nStart station\nEnd station\nStart neighborhood\nEnd neighborhood\nTemperature\nRain\nSnow\nWeather flags"
+  },
+  {
+    "objectID": "index.html#connecting-tableau-to-postgresql",
+    "href": "index.html#connecting-tableau-to-postgresql",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "6. Connecting Tableau to PostgreSQL",
+    "text": "6. Connecting Tableau to PostgreSQL\nTableau Desktop connects directly to the PostgreSQL database.\nConnection Information\n\nHost: localhost\nPort: 5432\nDatabase: citibike\nSchema: public\nData source: mv_tableau_citibike_dashboard\n\nThis creates a centralized analytical data source instead of loading independent CSV files into Tableau."
+  },
+  {
+    "objectID": "index.html#building-a-tableau-extract",
+    "href": "index.html#building-a-tableau-extract",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "7. Building a Tableau Extract",
+    "text": "7. Building a Tableau Extract\nAfter connecting to PostgreSQL, a Tableau Extract is created.\nSource\nmv_tableau_citibike_dashboard\nExtract Format\n.hyper\nWhy Use an Extract?\n\nFaster dashboard performance\nOptimized Tableau aggregations\nReduced database workload\nDashboard can work offline\nSmaller analytical file"
+  },
+  {
+    "objectID": "index.html#tableau-dashboard",
+    "href": "index.html#tableau-dashboard",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "8. Tableau Dashboard",
+    "text": "8. Tableau Dashboard\nThe final stage is an interactive Tableau dashboard.\nDashboard Components\n\n\n\nKPI cards (Total Rides, Avg Duration, Avg Distance, Member Share, Rainy Day Rides)\nDaily Rides trend\nRides by Hour of Day\nRides by Day of Week\nTop Start Neighborhood (bar chart + map)\n\n\n\nRides vs Temperature\nRides by Temperature Group\nMember Type by Bike Type\nRides by Member Type\nTop Start Stations\nTop End Stations"
+  },
+  {
+    "objectID": "index.html#full-dashboard-overview",
+    "href": "index.html#full-dashboard-overview",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Full Dashboard Overview",
+    "text": "Full Dashboard Overview"
+  },
+  {
+    "objectID": "index.html#dashboard-kpis",
+    "href": "index.html#dashboard-kpis",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Dashboard KPIs",
+    "text": "Dashboard KPIs\nThe dashboard begins with a high-level overview of Citi Bike activity.\nExample KPIs\n\nTotal rides\nAverage ride duration\nAverage ride distance\nMember share\nNumber of rainy-day rides\n\nKPIs allow users to understand the overall performance before exploring individual charts."
+  },
+  {
+    "objectID": "index.html#dashboard-time-analysis",
+    "href": "index.html#dashboard-time-analysis",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Dashboard: Time Analysis",
+    "text": "Dashboard: Time Analysis\nThe dashboard provides several views of activity over time.\nVisualizations\n\nDaily ride trend\nRides by hour of day\nRides by day of week\nMonthly trend\n\nThese charts help identify peak usage periods and seasonal patterns."
+  },
+  {
+    "objectID": "index.html#dashboard-geographic-analysis",
+    "href": "index.html#dashboard-geographic-analysis",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Dashboard: Geographic Analysis",
+    "text": "Dashboard: Geographic Analysis\nNeighborhood and station information is displayed geographically.\nGeographic Visualizations\n\nTop start neighborhoods\nTop end neighborhoods\nStart station activity\nEnd station activity\n\nSpatial analysis helps reveal which parts of Jersey City generate the highest Citi Bike demand."
+  },
+  {
+    "objectID": "index.html#dashboard-weather-analysis",
+    "href": "index.html#dashboard-weather-analysis",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Dashboard: Weather Analysis",
+    "text": "Dashboard: Weather Analysis\nWeather measures are connected with Citi Bike demand.\nAnalysis\n\nRides vs temperature\nDaily rides and temperature trend\nRainy-day usage\nSeasonal weather changes\n\nThis can help explain why demand changes throughout the year."
+  },
+  {
+    "objectID": "index.html#final-data-architecture",
+    "href": "index.html#final-data-architecture",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Final Data Architecture",
+    "text": "Final Data Architecture\nCiti Bike ZIP Files\n        |\nWeather API ---------&gt; Python\n        |               |\nNeighborhood GeoJSON    |\n                        v\n              Data Preparation\n                        |\n                        v\n              Python Analysis\n                        |\n                        v\n              PostgreSQL/PostGIS\n                        |\n                        v\n               Materialized View\n                        |\n                        v\n                    Tableau\n                        |\n                        v\n                Tableau Extract\n                        |\n                        v\n               Interactive Dashboard"
+  },
+  {
+    "objectID": "index.html#what-i-learned",
+    "href": "index.html#what-i-learned",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "What I Learned",
+    "text": "What I Learned\nThis project demonstrates that a dashboard is only the final stage of a much larger analytics workflow.\nMain Lessons\n\nWorking with multiple data sources\nAutomating web data collection\nCleaning large datasets with pandas\nPerforming spatial analysis\nUsing PostgreSQL and PostGIS\nCreating analytical SQL views\nConnecting databases to Tableau\nDesigning dashboard-ready datasets\nBuilding interactive visual analytics"
+  },
+  {
+    "objectID": "index.html#key-takeaway",
+    "href": "index.html#key-takeaway",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Key Takeaway",
+    "text": "Key Takeaway\nThe main objective was not only to create visualizations.\nThe project demonstrates a complete end-to-end Data Analytics workflow:\nWeb Data → Python → Analysis → PostgreSQL/PostGIS → Tableau → Dashboard\nThis approach separates:\nData Collection → Data Preparation → Analytics → Storage → Visualization\nand creates a workflow that is easier to reproduce, maintain, and extend."
+  },
+  {
+    "objectID": "index.html#thank-you",
+    "href": "index.html#thank-you",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Thank You",
+    "text": "Thank You\nCiti Bike Jersey City 2025–2026\nEnd-to-End Data Analytics Project\nPython · pandas · GeoPandas · PostgreSQL · PostGIS · Tableau Show less"
   }
 ]
