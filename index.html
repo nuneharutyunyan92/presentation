@@ -296,36 +296,12 @@ Nune Harutyunyan
 </section>
 <section id="downloading-citi-bike-data-implementation" class="slide level2 smaller">
 <h2>Downloading Citi Bike Data: Implementation</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb1-2"><a></a><span class="im">from</span> urllib.request <span class="im">import</span> urlretrieve</span>
-<span id="cb1-3"><a></a><span class="im">from</span> zipfile <span class="im">import</span> ZipFile</span>
-<span id="cb1-4"><a></a><span class="im">from</span> urllib.error <span class="im">import</span> HTTPError, URLError</span>
-<span id="cb1-5"><a></a></span>
-<span id="cb1-6"><a></a>CITIBIKE_INDEX_URL <span class="op">=</span> <span class="st">"https://s3.amazonaws.com/tripdata"</span></span>
-<span id="cb1-7"><a></a>OUTPUT_DIR <span class="op">=</span> <span class="st">"../data/JC"</span></span>
-<span id="cb1-8"><a></a>output_dir <span class="op">=</span> Path(OUTPUT_DIR)</span>
-<span id="cb1-9"><a></a>output_dir.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-10"><a></a></span>
-<span id="cb1-11"><a></a><span class="co"># PERIODS = list of "YYYYMM" strings, e.g. "202502" ... "202606"</span></span>
-<span id="cb1-12"><a></a><span class="cf">for</span> i <span class="kw">in</span> PERIODS:</span>
-<span id="cb1-13"><a></a></span>
-<span id="cb1-14"><a></a>    <span class="cf">try</span>:</span>
-<span id="cb1-15"><a></a>        file_name <span class="op">=</span> <span class="ss">f"JC-</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">-citibike-tripdata.csv.zip"</span></span>
-<span id="cb1-16"><a></a>        url <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>CITIBIKE_INDEX_URL<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>file_name<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb1-17"><a></a>        zip_path <span class="op">=</span> output_dir <span class="op">/</span> file_name</span>
-<span id="cb1-18"><a></a>        urlretrieve(url, zip_path)</span>
-<span id="cb1-19"><a></a></span>
-<span id="cb1-20"><a></a>    <span class="cf">except</span> (HTTPError, URLError, <span class="pp">FileNotFoundError</span>):</span>
-<span id="cb1-21"><a></a>        file_name <span class="op">=</span> <span class="ss">f"JC-</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">-citibike-tripdata.zip"</span></span>
-<span id="cb1-22"><a></a>        url <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>CITIBIKE_INDEX_URL<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>file_name<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb1-23"><a></a>        zip_path <span class="op">=</span> output_dir <span class="op">/</span> file_name</span>
-<span id="cb1-24"><a></a>        urlretrieve(url, zip_path)</span>
-<span id="cb1-25"><a></a></span>
-<span id="cb1-26"><a></a>    <span class="cf">with</span> ZipFile(zip_path, <span class="st">"r"</span>) <span class="im">as</span> zip_ref:</span>
-<span id="cb1-27"><a></a>        zip_ref.extractall(output_dir)</span>
-<span id="cb1-28"><a></a>    <span class="bu">print</span>(<span class="ss">f'</span><span class="sc">{</span>file_name<span class="sc">}</span><span class="ss">  Extracted'</span>)</span>
-<span id="cb1-29"><a></a>    zip_path.unlink()</span>
-<span id="cb1-30"><a></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>file_name<span class="sc">}</span><span class="ss"> removed."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Loops through each month and downloads the ZIP from Amazon S3</li>
+<li>Handles two file naming formats automatically</li>
+<li>Extracts the CSV from each ZIP into the data folder</li>
+<li>Deletes the ZIP file after extraction to save space</li>
+</ul>
 </section>
 <section id="citi-bike-trip-data-1" class="slide level2 smaller">
 <h2>Citi Bike Trip Data</h2>
@@ -356,49 +332,15 @@ Nune Harutyunyan
 </section>
 <section id="weather-data-implementation" class="slide level2 smaller">
 <h2>Weather Data: Implementation</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb2-2"><a></a><span class="im">import</span> requests</span>
-<span id="cb2-3"><a></a></span>
-<span id="cb2-4"><a></a>lat <span class="op">=</span> <span class="fl">40.7178</span></span>
-<span id="cb2-5"><a></a>lng <span class="op">=</span> <span class="op">-</span><span class="fl">74.0431</span></span>
-<span id="cb2-6"><a></a></span>
-<span id="cb2-7"><a></a>start_date <span class="op">=</span> <span class="st">"2025-01-01"</span></span>
-<span id="cb2-8"><a></a>end_date <span class="op">=</span> <span class="st">"2025-12-31"</span></span>
-<span id="cb2-9"><a></a></span>
-<span id="cb2-10"><a></a>url <span class="op">=</span> <span class="st">"https://archive-api.open-meteo.com/v1/archive"</span></span>
-<span id="cb2-11"><a></a></span>
-<span id="cb2-12"><a></a>params <span class="op">=</span> {</span>
-<span id="cb2-13"><a></a>    <span class="st">"latitude"</span>: lat,</span>
-<span id="cb2-14"><a></a>    <span class="st">"longitude"</span>: lng,</span>
-<span id="cb2-15"><a></a>    <span class="st">"start_date"</span>: start_date,</span>
-<span id="cb2-16"><a></a>    <span class="st">"end_date"</span>: end_date,</span>
-<span id="cb2-17"><a></a>    <span class="st">"daily"</span>: [</span>
-<span id="cb2-18"><a></a>        <span class="st">"temperature_2m_max"</span>,</span>
-<span id="cb2-19"><a></a>        <span class="st">"temperature_2m_min"</span>,</span>
-<span id="cb2-20"><a></a>        <span class="st">"temperature_2m_mean"</span>,</span>
-<span id="cb2-21"><a></a>        <span class="st">"precipitation_sum"</span>,</span>
-<span id="cb2-22"><a></a>        <span class="st">"rain_sum"</span>,</span>
-<span id="cb2-23"><a></a>        <span class="st">"snowfall_sum"</span>,</span>
-<span id="cb2-24"><a></a>        <span class="st">"wind_speed_10m_max"</span></span>
-<span id="cb2-25"><a></a>    ],</span>
-<span id="cb2-26"><a></a>    <span class="st">"timezone"</span>: <span class="st">"America/New_York"</span></span>
-<span id="cb2-27"><a></a>}</span>
-<span id="cb2-28"><a></a></span>
-<span id="cb2-29"><a></a>response <span class="op">=</span> requests.get(url, params<span class="op">=</span>params)</span>
-<span id="cb2-30"><a></a>response.raise_for_status()</span>
-<span id="cb2-31"><a></a></span>
-<span id="cb2-32"><a></a>data <span class="op">=</span> response.json()</span>
-<span id="cb2-33"><a></a></span>
-<span id="cb2-34"><a></a>weather_daily <span class="op">=</span> pd.DataFrame(data[<span class="st">"daily"</span>])</span>
-<span id="cb2-35"><a></a>weather_daily[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(weather_daily[<span class="st">"time"</span>])</span>
-<span id="cb2-36"><a></a>weather_daily <span class="op">=</span> weather_daily.drop(columns<span class="op">=</span><span class="st">"time"</span>)</span>
-<span id="cb2-37"><a></a></span>
-<span id="cb2-38"><a></a>weather_daily.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Calls Open-Meteo Historical Weather API for Jersey City coordinates</li>
+<li>Requests daily temperature, precipitation, snowfall, and wind speed</li>
+<li>Covers February 2025 – June 2026 to match trip data range</li>
+<li>Converts JSON response into a pandas DataFrame</li>
+</ul>
 </section>
-<section id="weather-data-1" class="slide level2 smaller">
-<h2>Weather Data</h2>
-<p>Weather information is retrieved using the <strong>Open-Meteo API</strong>.</p>
-<h3 id="daily-weather-variables">Daily Weather Variables</h3>
+<section id="daily-weather-variables" class="slide level2 smaller">
+<h2>Daily Weather Variables</h2>
 <ul>
 <li>Mean temperature</li>
 <li>Maximum temperature</li>
@@ -450,19 +392,19 @@ Nune Harutyunyan
 <section id="cleaning-citi-bike-data" class="slide level2 smaller">
 <h2>Cleaning Citi Bike Data</h2>
 <p>Example Python workflow:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb3-2"><a></a></span>
-<span id="cb3-3"><a></a>citibike_df[<span class="st">"started_at"</span>] <span class="op">=</span> pd.to_datetime(</span>
-<span id="cb3-4"><a></a>    citibike_df[<span class="st">"started_at"</span>]</span>
-<span id="cb3-5"><a></a>)</span>
-<span id="cb3-6"><a></a></span>
-<span id="cb3-7"><a></a>citibike_df[<span class="st">"ended_at"</span>] <span class="op">=</span> pd.to_datetime(</span>
-<span id="cb3-8"><a></a>    citibike_df[<span class="st">"ended_at"</span>]</span>
-<span id="cb3-9"><a></a>)</span>
-<span id="cb3-10"><a></a></span>
-<span id="cb3-11"><a></a>citibike_df <span class="op">=</span> citibike_df.drop_duplicates(</span>
-<span id="cb3-12"><a></a>    subset<span class="op">=</span><span class="st">"ride_id"</span></span>
-<span id="cb3-13"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a></a></span>
+<span id="cb1-3"><a></a>citibike_df[<span class="st">"started_at"</span>] <span class="op">=</span> pd.to_datetime(</span>
+<span id="cb1-4"><a></a>    citibike_df[<span class="st">"started_at"</span>]</span>
+<span id="cb1-5"><a></a>)</span>
+<span id="cb1-6"><a></a></span>
+<span id="cb1-7"><a></a>citibike_df[<span class="st">"ended_at"</span>] <span class="op">=</span> pd.to_datetime(</span>
+<span id="cb1-8"><a></a>    citibike_df[<span class="st">"ended_at"</span>]</span>
+<span id="cb1-9"><a></a>)</span>
+<span id="cb1-10"><a></a></span>
+<span id="cb1-11"><a></a>citibike_df <span class="op">=</span> citibike_df.drop_duplicates(</span>
+<span id="cb1-12"><a></a>    subset<span class="op">=</span><span class="st">"ride_id"</span></span>
+<span id="cb1-13"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The main goal is to produce a consistent dataset before beginning the analysis.</p>
 </section>
 <section id="feature-engineering" class="slide level2 smaller">
@@ -499,10 +441,10 @@ Nune Harutyunyan
 </section>
 <section id="example-ride-duration" class="slide level2 smaller">
 <h2>Example: Ride Duration</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a>citibike_df[<span class="st">"duration_min"</span>] <span class="op">=</span> (</span>
-<span id="cb4-2"><a></a>    citibike_df[<span class="st">"ended_at"</span>]</span>
-<span id="cb4-3"><a></a>    <span class="op">-</span> citibike_df[<span class="st">"started_at"</span>]</span>
-<span id="cb4-4"><a></a>).dt.total_seconds() <span class="op">/</span> <span class="dv">60</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a>citibike_df[<span class="st">"duration_min"</span>] <span class="op">=</span> (</span>
+<span id="cb2-2"><a></a>    citibike_df[<span class="st">"ended_at"</span>]</span>
+<span id="cb2-3"><a></a>    <span class="op">-</span> citibike_df[<span class="st">"started_at"</span>]</span>
+<span id="cb2-4"><a></a>).dt.total_seconds() <span class="op">/</span> <span class="dv">60</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Ride duration allows us to analyze how long users typically keep a Citi Bike.</p>
 </section>
 <section id="analysis-with-python" class="slide level2 smaller">
@@ -545,7 +487,8 @@ Nune Harutyunyan
 <li>Seasonal activity</li>
 </ul>
 <p>This helps identify commuting patterns and seasonal differences in bike usage.</p>
-</section>
+
+<img data-src="img/newplot.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="member-vs-casual-riders" class="slide level2 smaller">
 <h2>Member vs Casual Riders</h2>
 <p>Citi Bike users are divided into two main categories:</p>
@@ -591,11 +534,11 @@ Nune Harutyunyan
 <li>Aggregate rides by neighborhood</li>
 </ul>
 <p>Example:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a>stations_with_neighborhood <span class="op">=</span> gpd.sjoin(</span>
-<span id="cb5-2"><a></a>    stations_gdf,</span>
-<span id="cb5-3"><a></a>    neighborhoods_gdf,</span>
-<span id="cb5-4"><a></a>    predicate<span class="op">=</span><span class="st">"within"</span></span>
-<span id="cb5-5"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a>stations_with_neighborhood <span class="op">=</span> gpd.sjoin(</span>
+<span id="cb3-2"><a></a>    stations_gdf,</span>
+<span id="cb3-3"><a></a>    neighborhoods_gdf,</span>
+<span id="cb3-4"><a></a>    predicate<span class="op">=</span><span class="st">"within"</span></span>
+<span id="cb3-5"><a></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="weather-impact-analysis" class="slide level2 smaller">
 <h2>Weather Impact Analysis</h2>
@@ -609,6 +552,10 @@ Nune Harutyunyan
 </ul>
 <p>The relationship between temperature and daily rides is particularly useful for understanding seasonal demand.</p>
 </section>
+<section class="slide level2">
+
+
+<img data-src="img/newplot_1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="creating-the-citi-bike-database" class="slide level2 smaller">
 <h2>4. Creating the Citi Bike Database</h2>
 <p>After the Python analysis, cleaned datasets are stored in <strong>PostgreSQL</strong>.</p>
@@ -656,30 +603,30 @@ Nune Harutyunyan
 <h2>PostgreSQL + PostGIS</h2>
 <p>PostGIS extends PostgreSQL with geographic functionality.</p>
 <p>Example spatial operation:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a></a><span class="kw">SELECT</span></span>
-<span id="cb6-2"><a></a>    s.station_name,</span>
-<span id="cb6-3"><a></a>    n.neighborhood</span>
-<span id="cb6-4"><a></a><span class="kw">FROM</span> jc_stations <span class="kw">AS</span> s</span>
-<span id="cb6-5"><a></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> jersey_city_neighborhoods <span class="kw">AS</span> n</span>
-<span id="cb6-6"><a></a>    <span class="kw">ON</span> ST_Within(</span>
-<span id="cb6-7"><a></a>        s.geometry,</span>
-<span id="cb6-8"><a></a>        n.geometry</span>
-<span id="cb6-9"><a></a>    );</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a></a><span class="kw">SELECT</span></span>
+<span id="cb4-2"><a></a>    s.station_name,</span>
+<span id="cb4-3"><a></a>    n.neighborhood</span>
+<span id="cb4-4"><a></a><span class="kw">FROM</span> jc_stations <span class="kw">AS</span> s</span>
+<span id="cb4-5"><a></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> jersey_city_neighborhoods <span class="kw">AS</span> n</span>
+<span id="cb4-6"><a></a>    <span class="kw">ON</span> ST_Within(</span>
+<span id="cb4-7"><a></a>        s.geometry,</span>
+<span id="cb4-8"><a></a>        n.geometry</span>
+<span id="cb4-9"><a></a>    );</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This assigns each station to its corresponding Jersey City neighborhood.</p>
 </section>
 <section id="dashboard-ready-materialized-view" class="slide level2 smaller">
 <h2>5. Dashboard-Ready Materialized View</h2>
 <p>Instead of asking Tableau to repeatedly join multiple large tables, a <strong>Materialized View</strong> is created.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a></a><span class="kw">CREATE</span> <span class="kw">MATERIALIZED</span> <span class="kw">VIEW</span></span>
-<span id="cb7-2"><a></a>mv_tableau_citibike_dashboard</span>
-<span id="cb7-3"><a></a><span class="kw">AS</span></span>
-<span id="cb7-4"><a></a></span>
-<span id="cb7-5"><a></a><span class="kw">SELECT</span></span>
-<span id="cb7-6"><a></a>    <span class="op">..</span>.</span>
-<span id="cb7-7"><a></a><span class="kw">FROM</span> jersey_city <span class="kw">AS</span> rides</span>
-<span id="cb7-8"><a></a></span>
-<span id="cb7-9"><a></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> jersey_weather <span class="kw">AS</span> weather</span>
-<span id="cb7-10"><a></a>    <span class="kw">ON</span> rides.ride_date <span class="op">=</span> weather.<span class="dt">date</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a></a><span class="kw">CREATE</span> <span class="kw">MATERIALIZED</span> <span class="kw">VIEW</span></span>
+<span id="cb5-2"><a></a>mv_tableau_citibike_dashboard</span>
+<span id="cb5-3"><a></a><span class="kw">AS</span></span>
+<span id="cb5-4"><a></a></span>
+<span id="cb5-5"><a></a><span class="kw">SELECT</span></span>
+<span id="cb5-6"><a></a>    <span class="op">..</span>.</span>
+<span id="cb5-7"><a></a><span class="kw">FROM</span> jersey_city <span class="kw">AS</span> rides</span>
+<span id="cb5-8"><a></a></span>
+<span id="cb5-9"><a></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> jersey_weather <span class="kw">AS</span> weather</span>
+<span id="cb5-10"><a></a>    <span class="kw">ON</span> rides.ride_date <span class="op">=</span> weather.<span class="dt">date</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The view becomes the main analytical dataset for Tableau.</p>
 </section>
 <section id="why-use-a-materialized-view" class="slide level2 smaller">
@@ -713,7 +660,6 @@ Nune Harutyunyan
 <li>Duration</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<h3 id="example-fields-1">Example Fields</h3>
 <ul>
 <li>Distance</li>
 <li>Start station</li>
@@ -837,31 +783,31 @@ Nune Harutyunyan
 </section>
 <section id="final-data-architecture" class="slide level2 smaller">
 <h2>Final Data Architecture</h2>
-<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb8-1"><a></a>Citi Bike ZIP Files</span>
-<span id="cb8-2"><a></a>        |</span>
-<span id="cb8-3"><a></a>Weather API ---------&gt; Python</span>
-<span id="cb8-4"><a></a>        |               |</span>
-<span id="cb8-5"><a></a>Neighborhood GeoJSON    |</span>
-<span id="cb8-6"><a></a>                        v</span>
-<span id="cb8-7"><a></a>              Data Preparation</span>
-<span id="cb8-8"><a></a>                        |</span>
-<span id="cb8-9"><a></a>                        v</span>
-<span id="cb8-10"><a></a>              Python Analysis</span>
-<span id="cb8-11"><a></a>                        |</span>
-<span id="cb8-12"><a></a>                        v</span>
-<span id="cb8-13"><a></a>              PostgreSQL/PostGIS</span>
-<span id="cb8-14"><a></a>                        |</span>
-<span id="cb8-15"><a></a>                        v</span>
-<span id="cb8-16"><a></a>               Materialized View</span>
-<span id="cb8-17"><a></a>                        |</span>
-<span id="cb8-18"><a></a>                        v</span>
-<span id="cb8-19"><a></a>                    Tableau</span>
-<span id="cb8-20"><a></a>                        |</span>
-<span id="cb8-21"><a></a>                        v</span>
-<span id="cb8-22"><a></a>                Tableau Extract</span>
-<span id="cb8-23"><a></a>                        |</span>
-<span id="cb8-24"><a></a>                        v</span>
-<span id="cb8-25"><a></a>               Interactive Dashboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a></a>Citi Bike ZIP Files</span>
+<span id="cb6-2"><a></a>        |</span>
+<span id="cb6-3"><a></a>Weather API ---------&gt; Python</span>
+<span id="cb6-4"><a></a>        |               |</span>
+<span id="cb6-5"><a></a>Neighborhood GeoJSON    |</span>
+<span id="cb6-6"><a></a>                        v</span>
+<span id="cb6-7"><a></a>              Data Preparation</span>
+<span id="cb6-8"><a></a>                        |</span>
+<span id="cb6-9"><a></a>                        v</span>
+<span id="cb6-10"><a></a>              Python Analysis</span>
+<span id="cb6-11"><a></a>                        |</span>
+<span id="cb6-12"><a></a>                        v</span>
+<span id="cb6-13"><a></a>              PostgreSQL/PostGIS</span>
+<span id="cb6-14"><a></a>                        |</span>
+<span id="cb6-15"><a></a>                        v</span>
+<span id="cb6-16"><a></a>               Materialized View</span>
+<span id="cb6-17"><a></a>                        |</span>
+<span id="cb6-18"><a></a>                        v</span>
+<span id="cb6-19"><a></a>                    Tableau</span>
+<span id="cb6-20"><a></a>                        |</span>
+<span id="cb6-21"><a></a>                        v</span>
+<span id="cb6-22"><a></a>                Tableau Extract</span>
+<span id="cb6-23"><a></a>                        |</span>
+<span id="cb6-24"><a></a>                        v</span>
+<span id="cb6-25"><a></a>               Interactive Dashboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="what-i-learned" class="slide level2 smaller">
 <h2>What I Learned</h2>

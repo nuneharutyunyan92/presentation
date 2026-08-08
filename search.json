@@ -39,7 +39,7 @@
     "href": "index.html#downloading-citi-bike-data-implementation",
     "title": "Citi Bike Jersey City 2025-2026",
     "section": "Downloading Citi Bike Data: Implementation",
-    "text": "Downloading Citi Bike Data: Implementation\nfrom pathlib import Path\nfrom urllib.request import urlretrieve\nfrom zipfile import ZipFile\nfrom urllib.error import HTTPError, URLError\n\nCITIBIKE_INDEX_URL = \"https://s3.amazonaws.com/tripdata\"\nOUTPUT_DIR = \"../data/JC\"\noutput_dir = Path(OUTPUT_DIR)\noutput_dir.mkdir(exist_ok=True)\n\n# PERIODS = list of \"YYYYMM\" strings, e.g. \"202502\" ... \"202606\"\nfor i in PERIODS:\n\n    try:\n        file_name = f\"JC-{i}-citibike-tripdata.csv.zip\"\n        url = f\"{CITIBIKE_INDEX_URL}/{file_name}\"\n        zip_path = output_dir / file_name\n        urlretrieve(url, zip_path)\n\n    except (HTTPError, URLError, FileNotFoundError):\n        file_name = f\"JC-{i}-citibike-tripdata.zip\"\n        url = f\"{CITIBIKE_INDEX_URL}/{file_name}\"\n        zip_path = output_dir / file_name\n        urlretrieve(url, zip_path)\n\n    with ZipFile(zip_path, \"r\") as zip_ref:\n        zip_ref.extractall(output_dir)\n    print(f'{file_name}  Extracted')\n    zip_path.unlink()\n    print(f\"{file_name} removed.\")"
+    "text": "Downloading Citi Bike Data: Implementation\n\nLoops through each month and downloads the ZIP from Amazon S3\nHandles two file naming formats automatically\nExtracts the CSV from each ZIP into the data folder\nDeletes the ZIP file after extraction to save space"
   },
   {
     "objectID": "index.html#citi-bike-trip-data-1",
@@ -60,14 +60,14 @@
     "href": "index.html#weather-data-implementation",
     "title": "Citi Bike Jersey City 2025-2026",
     "section": "Weather Data: Implementation",
-    "text": "Weather Data: Implementation\nimport pandas as pd\nimport requests\n\nlat = 40.7178\nlng = -74.0431\n\nstart_date = \"2025-01-01\"\nend_date = \"2025-12-31\"\n\nurl = \"https://archive-api.open-meteo.com/v1/archive\"\n\nparams = {\n    \"latitude\": lat,\n    \"longitude\": lng,\n    \"start_date\": start_date,\n    \"end_date\": end_date,\n    \"daily\": [\n        \"temperature_2m_max\",\n        \"temperature_2m_min\",\n        \"temperature_2m_mean\",\n        \"precipitation_sum\",\n        \"rain_sum\",\n        \"snowfall_sum\",\n        \"wind_speed_10m_max\"\n    ],\n    \"timezone\": \"America/New_York\"\n}\n\nresponse = requests.get(url, params=params)\nresponse.raise_for_status()\n\ndata = response.json()\n\nweather_daily = pd.DataFrame(data[\"daily\"])\nweather_daily[\"date\"] = pd.to_datetime(weather_daily[\"time\"])\nweather_daily = weather_daily.drop(columns=\"time\")\n\nweather_daily.head()"
+    "text": "Weather Data: Implementation\n\nCalls Open-Meteo Historical Weather API for Jersey City coordinates\nRequests daily temperature, precipitation, snowfall, and wind speed\nCovers February 2025 – June 2026 to match trip data range\nConverts JSON response into a pandas DataFrame"
   },
   {
-    "objectID": "index.html#weather-data-1",
-    "href": "index.html#weather-data-1",
+    "objectID": "index.html#daily-weather-variables",
+    "href": "index.html#daily-weather-variables",
     "title": "Citi Bike Jersey City 2025-2026",
-    "section": "Weather Data",
-    "text": "Weather Data\nWeather information is retrieved using the Open-Meteo API.\nDaily Weather Variables\n\nMean temperature\nMaximum temperature\nMinimum temperature\nPrecipitation\nRain\nSnowfall\nMaximum wind speed"
+    "section": "Daily Weather Variables",
+    "text": "Daily Weather Variables\n\nMean temperature\nMaximum temperature\nMinimum temperature\nPrecipitation\nRain\nSnowfall\nMaximum wind speed"
   },
   {
     "objectID": "index.html#neighborhood-geographic-data",
@@ -193,7 +193,7 @@
     "href": "index.html#dashboard-dataset",
     "title": "Citi Bike Jersey City 2025-2026",
     "section": "Dashboard Dataset",
-    "text": "Dashboard Dataset\nThe Materialized View contains both original and derived variables.\n\n\nExample Fields\n\nRide ID\nRide date\nMonth\nHour\nDay of week\nMember type\nBike type\nDuration\n\n\nExample Fields\n\nDistance\nStart station\nEnd station\nStart neighborhood\nEnd neighborhood\nTemperature\nRain\nSnow\nWeather flags"
+    "text": "Dashboard Dataset\nThe Materialized View contains both original and derived variables.\n\n\nExample Fields\n\nRide ID\nRide date\nMonth\nHour\nDay of week\nMember type\nBike type\nDuration\n\n\n\nDistance\nStart station\nEnd station\nStart neighborhood\nEnd neighborhood\nTemperature\nRain\nSnow\nWeather flags"
   },
   {
     "objectID": "index.html#connecting-tableau-to-postgresql",
