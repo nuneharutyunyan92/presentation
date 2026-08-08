@@ -98,42 +98,13 @@ The project starts with three independent external data sources.
 - Jersey City trips only
    
 
----
 
 ## Downloading Citi Bike Data: Implementation {.smaller}
 
-```python
-from pathlib import Path
-from urllib.request import urlretrieve
-from zipfile import ZipFile
-from urllib.error import HTTPError, URLError
-
-CITIBIKE_INDEX_URL = "https://s3.amazonaws.com/tripdata"
-OUTPUT_DIR = "../data/JC"
-output_dir = Path(OUTPUT_DIR)
-output_dir.mkdir(exist_ok=True)
-
-# PERIODS = list of "YYYYMM" strings, e.g. "202502" ... "202606"
-for i in PERIODS:
-
-    try:
-        file_name = f"JC-{i}-citibike-tripdata.csv.zip"
-        url = f"{CITIBIKE_INDEX_URL}/{file_name}"
-        zip_path = output_dir / file_name
-        urlretrieve(url, zip_path)
-
-    except (HTTPError, URLError, FileNotFoundError):
-        file_name = f"JC-{i}-citibike-tripdata.zip"
-        url = f"{CITIBIKE_INDEX_URL}/{file_name}"
-        zip_path = output_dir / file_name
-        urlretrieve(url, zip_path)
-
-    with ZipFile(zip_path, "r") as zip_ref:
-        zip_ref.extractall(output_dir)
-    print(f'{file_name}  Extracted')
-    zip_path.unlink()
-    print(f"{file_name} removed.")
-```
+- Loops through each month and downloads the ZIP from Amazon S3
+- Handles two file naming formats automatically
+- Extracts the CSV from each ZIP into the data folder
+- Deletes the ZIP file after extraction to save space
 
 
 ## Citi Bike Trip Data {.smaller}
@@ -165,52 +136,14 @@ Each row represents **one Citi Bike trip**.
 
 ## Weather Data: Implementation {.smaller}
 
-```python
-import pandas as pd
-import requests
+- Calls Open-Meteo Historical Weather API for Jersey City coordinates
+- Requests daily temperature, precipitation, snowfall, and wind speed
+- Covers February 2025 – June 2026 to match trip data range
+- Converts JSON response into a pandas DataFrame
 
-lat = 40.7178
-lng = -74.0431
+---
 
-start_date = "2025-01-01"
-end_date = "2025-12-31"
-
-url = "https://archive-api.open-meteo.com/v1/archive"
-
-params = {
-    "latitude": lat,
-    "longitude": lng,
-    "start_date": start_date,
-    "end_date": end_date,
-    "daily": [
-        "temperature_2m_max",
-        "temperature_2m_min",
-        "temperature_2m_mean",
-        "precipitation_sum",
-        "rain_sum",
-        "snowfall_sum",
-        "wind_speed_10m_max"
-    ],
-    "timezone": "America/New_York"
-}
-
-response = requests.get(url, params=params)
-response.raise_for_status()
-
-data = response.json()
-
-weather_daily = pd.DataFrame(data["daily"])
-weather_daily["date"] = pd.to_datetime(weather_daily["time"])
-weather_daily = weather_daily.drop(columns="time")
-
-weather_daily.head()
-```
-## Weather Data {.smaller}
-
-Weather information is retrieved using the **Open-Meteo API**.
-
-### Daily Weather Variables
-
+## Daily Weather Variables {.smaller}
 
 - Mean temperature
 - Maximum temperature
@@ -219,7 +152,7 @@ Weather information is retrieved using the **Open-Meteo API**.
 - Rain
 - Snowfall
 - Maximum wind speed
-  
+
 ---
 
 ## Neighborhood Geographic Data {.smaller}
@@ -389,6 +322,7 @@ Trip activity is analyzed across different time dimensions.
 
 This helps identify commuting patterns and seasonal differences in bike usage.
 
+![](img/newplot.png){fig-align="center" width="70%"}
 ---
 
 ## Member vs Casual Riders {.smaller}
@@ -473,6 +407,10 @@ Weather data is combined with daily Citi Bike activity.
 - Does wind speed influence activity?
 
 The relationship between temperature and daily rides is particularly useful for understanding seasonal demand.
+
+---
+
+![](img/newplot_1.png){fig-align="center" width="70%"}
 
 
 ## 4. Creating the Citi Bike Database {.smaller}
@@ -587,7 +525,8 @@ The Materialized View contains both original and derived variables.
 
 ::: {.column width="50%"}
 
-### Example Fields 
+
+
 
 - Distance
 - Start station
