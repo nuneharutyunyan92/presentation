@@ -308,11 +308,11 @@ The first stage focuses on understanding the structure and quality of the datase
 
 ---
 
-## Time Trend Analysis {.smaller}
+## Time Trend Analysis
 
 Trip activity is analyzed across different time dimensions.
 
-### Time Aggregations
+## Time Aggregations
 
 - Daily rides
 - Monthly rides
@@ -322,8 +322,11 @@ Trip activity is analyzed across different time dimensions.
 
 This helps identify commuting patterns and seasonal differences in bike usage.
 
+## Daily Average Temperature
+
 ![](img/newplot.png){fig-align="center" width="70%"}
----
+
+
 
 ## Member vs Casual Riders {.smaller}
 
