@@ -123,7 +123,21 @@
     "href": "index.html#time-trend-analysis",
     "title": "Citi Bike Jersey City 2025-2026",
     "section": "Time Trend Analysis",
-    "text": "Time Trend Analysis\nTrip activity is analyzed across different time dimensions.\nTime Aggregations\n\nDaily rides\nMonthly rides\nRides by hour\nRides by weekday\nSeasonal activity\n\nThis helps identify commuting patterns and seasonal differences in bike usage."
+    "text": "Time Trend Analysis\nTrip activity is analyzed across different time dimensions."
+  },
+  {
+    "objectID": "index.html#time-aggregations",
+    "href": "index.html#time-aggregations",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Time Aggregations",
+    "text": "Time Aggregations\n\nDaily rides\nMonthly rides\nRides by hour\nRides by weekday\nSeasonal activity\n\nThis helps identify commuting patterns and seasonal differences in bike usage."
+  },
+  {
+    "objectID": "index.html#daily-average-temperature",
+    "href": "index.html#daily-average-temperature",
+    "title": "Citi Bike Jersey City 2025-2026",
+    "section": "Daily Average Temperature",
+    "text": "Daily Average Temperature"
   },
   {
     "objectID": "index.html#member-vs-casual-riders",
