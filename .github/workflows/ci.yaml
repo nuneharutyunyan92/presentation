@@ -1,0 +1,50 @@
+name: Quarto Publish
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - "index.qmd"
+      - "_quarto.yml"
+      - ".github/workflows/ci.yml"
+      - "img/**"
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: "1.6.39"
+
+      - name: Initialize gh-pages branch
+        run: |
+          if ! git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            empty_tree="$(git hash-object -t tree /dev/null)"
+            initial_commit="$(
+              printf '%s\n' 'Initialize gh-pages branch' |
+                git -c user.name='github-actions[bot]' \
+                  -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+                  commit-tree "$empty_tree"
+            )"
+            git push origin "$initial_commit:refs/heads/gh-pages"
+          else
+            echo "gh-pages branch already exists. Skipping initialization."
+          fi
+
+      - name: Render and publish
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
