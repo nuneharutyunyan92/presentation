@@ -27,11 +27,15 @@ format:
           </style>
     
 ---
+
 ## Objective {.smaller}
+
 - Transform data into a **strategic banking asset**  
 - Eliminate **data silos** and enable **integrated decision-making**  
 - Build a **scalable, governed, and AI-ready organization**
+
 ## The Core Problem: Data Silos {.smaller}
+
 - **Fragmented systems across:**
   - Core banking  
   - CRM  
@@ -44,6 +48,7 @@ format:
   - Poor customer experience  
   - Limited AI capability 
   - Missing Single Source of Truth 
+
 ## Data Silos in Banking {.smaller}
 Show less
 
