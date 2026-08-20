@@ -322,9 +322,9 @@ Trip activity is analyzed across different time dimensions.
 
 This helps identify commuting patterns and seasonal differences in bike usage.
 
-## Daily Average Temperature
+## Monthly rides
 
-![](img/newplot.png){fig-align="center" width="70%"}
+![](img/newplot_2.png){fig-align="center" width="70%"}
 
 
 
@@ -612,18 +612,15 @@ The final stage is an interactive Tableau dashboard.
 
 :::
 
+
+### Full Dashboard Overview {.smaller}
+
+```{=html}
+<p style="text-align:center; margin-top:20px;">
+  <a href="https://public.tableau.com/views/Citibike_17862071486770/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link" target="_blank">dashboard</a>
+</p>
+```
 ::::
-
----
-
-
-## Full Dashboard Overview {.smaller}
-
-::: {style="text-align: center;"}
-[![](img/Dashboard_1.png){height=580px}](img/dashboard_1){target="_blank"}
-:::
-
----
 
 
 ## Dashboard KPIs {.smaller}
@@ -687,55 +684,6 @@ This can help explain why demand changes throughout the year.
 
 ---
 
-## Final Data Architecture {.smaller}
-
-```text
-Citi Bike ZIP Files
-        |
-Weather API ---------> Python
-        |               |
-Neighborhood GeoJSON    |
-                        v
-              Data Preparation
-                        |
-                        v
-              Python Analysis
-                        |
-                        v
-              PostgreSQL/PostGIS
-                        |
-                        v
-               Materialized View
-                        |
-                        v
-                    Tableau
-                        |
-                        v
-                Tableau Extract
-                        |
-                        v
-               Interactive Dashboard
-```
-
----
-
-## What I Learned {.smaller}
-
-This project demonstrates that a dashboard is only the final stage of a much larger analytics workflow.
-
-### Main Lessons
-
-- Working with multiple data sources
-- Automating web data collection
-- Cleaning large datasets with pandas
-- Performing spatial analysis
-- Using PostgreSQL and PostGIS
-- Creating analytical SQL views
-- Connecting databases to Tableau
-- Designing dashboard-ready datasets
-- Building interactive visual analytics
-
----
 
 ## Key Takeaway {.smaller}
 
