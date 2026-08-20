@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.6.39">
 
   <meta name="author" content="Nune Harutyunyan">
-  <meta name="dcterms.date" content="2026-08-08">
+  <meta name="dcterms.date" content="2026-08-20">
   <title>Data Vision – Citi Bike Jersey City 2025-2026</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -220,7 +220,7 @@ Nune Harutyunyan
 </div>
 </div>
 
-  <p class="date">2026-08-08</p>
+  <p class="date">2026-08-20</p>
 </section>
 <section id="project-overview" class="slide level2 smaller">
 <h2>Project Overview</h2>
@@ -490,10 +490,10 @@ Nune Harutyunyan
 </ul>
 <p>This helps identify commuting patterns and seasonal differences in bike usage.</p>
 </section>
-<section id="daily-average-temperature" class="slide level2">
-<h2>Daily Average Temperature</h2>
+<section id="monthly-rides" class="slide level2">
+<h2>Monthly rides</h2>
 
-<img data-src="img/newplot.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
+<img data-src="img/newplot_2.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="member-vs-casual-riders" class="slide level2 smaller">
 <h2>Member vs Casual Riders</h2>
 <p>Citi Bike users are divided into two main categories:</p>
@@ -729,12 +729,10 @@ Nune Harutyunyan
 <li>Top Start Stations</li>
 <li>Top End Stations</li>
 </ul>
-</div></div>
-</section>
-<section id="full-dashboard-overview" class="slide level2 smaller">
-<h2>Full Dashboard Overview</h2>
-<div style="text-align: center;">
-<p><a href="img/dashboard_1" target="_blank"><img data-src="img/Dashboard_1.png" height="580"></a></p>
+</div><h3 class="smaller" id="full-dashboard-overview">Full Dashboard Overview</h3>
+<p style="text-align:center; margin-top:20px;">
+  <a href="https://public.tableau.com/views/Citibike_17862071486770/Dashboard1?:language=en-US&amp;:display_count=n&amp;:origin=viz_share_link" target="_blank">dashboard</a>
+</p>
 </div>
 </section>
 <section id="dashboard-kpis" class="slide level2 smaller">
@@ -785,50 +783,6 @@ Nune Harutyunyan
 <li>Seasonal weather changes</li>
 </ul>
 <p>This can help explain why demand changes throughout the year.</p>
-</section>
-<section id="final-data-architecture" class="slide level2 smaller">
-<h2>Final Data Architecture</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a></a>Citi Bike ZIP Files</span>
-<span id="cb6-2"><a></a>        |</span>
-<span id="cb6-3"><a></a>Weather API ---------&gt; Python</span>
-<span id="cb6-4"><a></a>        |               |</span>
-<span id="cb6-5"><a></a>Neighborhood GeoJSON    |</span>
-<span id="cb6-6"><a></a>                        v</span>
-<span id="cb6-7"><a></a>              Data Preparation</span>
-<span id="cb6-8"><a></a>                        |</span>
-<span id="cb6-9"><a></a>                        v</span>
-<span id="cb6-10"><a></a>              Python Analysis</span>
-<span id="cb6-11"><a></a>                        |</span>
-<span id="cb6-12"><a></a>                        v</span>
-<span id="cb6-13"><a></a>              PostgreSQL/PostGIS</span>
-<span id="cb6-14"><a></a>                        |</span>
-<span id="cb6-15"><a></a>                        v</span>
-<span id="cb6-16"><a></a>               Materialized View</span>
-<span id="cb6-17"><a></a>                        |</span>
-<span id="cb6-18"><a></a>                        v</span>
-<span id="cb6-19"><a></a>                    Tableau</span>
-<span id="cb6-20"><a></a>                        |</span>
-<span id="cb6-21"><a></a>                        v</span>
-<span id="cb6-22"><a></a>                Tableau Extract</span>
-<span id="cb6-23"><a></a>                        |</span>
-<span id="cb6-24"><a></a>                        v</span>
-<span id="cb6-25"><a></a>               Interactive Dashboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="what-i-learned" class="slide level2 smaller">
-<h2>What I Learned</h2>
-<p>This project demonstrates that a dashboard is only the final stage of a much larger analytics workflow.</p>
-<h3 id="main-lessons">Main Lessons</h3>
-<ul>
-<li>Working with multiple data sources</li>
-<li>Automating web data collection</li>
-<li>Cleaning large datasets with pandas</li>
-<li>Performing spatial analysis</li>
-<li>Using PostgreSQL and PostGIS</li>
-<li>Creating analytical SQL views</li>
-<li>Connecting databases to Tableau</li>
-<li>Designing dashboard-ready datasets</li>
-<li>Building interactive visual analytics</li>
-</ul>
 </section>
 <section id="key-takeaway" class="slide level2 smaller">
 <h2>Key Takeaway</h2>

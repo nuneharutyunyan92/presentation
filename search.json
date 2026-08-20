@@ -133,11 +133,11 @@
     "text": "Time Aggregations\n\nDaily rides\nMonthly rides\nRides by hour\nRides by weekday\nSeasonal activity\n\nThis helps identify commuting patterns and seasonal differences in bike usage."
   },
   {
-    "objectID": "index.html#daily-average-temperature",
-    "href": "index.html#daily-average-temperature",
+    "objectID": "index.html#monthly-rides",
+    "href": "index.html#monthly-rides",
     "title": "Citi Bike Jersey City 2025-2026",
-    "section": "Daily Average Temperature",
-    "text": "Daily Average Temperature"
+    "section": "Monthly rides",
+    "text": "Monthly rides"
   },
   {
     "objectID": "index.html#member-vs-casual-riders",
@@ -228,14 +228,7 @@
     "href": "index.html#tableau-dashboard",
     "title": "Citi Bike Jersey City 2025-2026",
     "section": "8. Tableau Dashboard",
-    "text": "8. Tableau Dashboard\nThe final stage is an interactive Tableau dashboard.\nDashboard Components\n\n\n\nKPI cards (Total Rides, Avg Duration, Avg Distance, Member Share, Rainy Day Rides)\nDaily Rides trend\nRides by Hour of Day\nRides by Day of Week\nTop Start Neighborhood (bar chart + map)\n\n\n\nRides vs Temperature\nRides by Temperature Group\nMember Type by Bike Type\nRides by Member Type\nTop Start Stations\nTop End Stations"
-  },
-  {
-    "objectID": "index.html#full-dashboard-overview",
-    "href": "index.html#full-dashboard-overview",
-    "title": "Citi Bike Jersey City 2025-2026",
-    "section": "Full Dashboard Overview",
-    "text": "Full Dashboard Overview"
+    "text": "8. Tableau Dashboard\nThe final stage is an interactive Tableau dashboard.\nDashboard Components\n\n\n\nKPI cards (Total Rides, Avg Duration, Avg Distance, Member Share, Rainy Day Rides)\nDaily Rides trend\nRides by Hour of Day\nRides by Day of Week\nTop Start Neighborhood (bar chart + map)\n\n\n\nRides vs Temperature\nRides by Temperature Group\nMember Type by Bike Type\nRides by Member Type\nTop Start Stations\nTop End Stations\n\nFull Dashboard Overview\n\n  dashboard"
   },
   {
     "objectID": "index.html#dashboard-kpis",
@@ -264,20 +257,6 @@
     "title": "Citi Bike Jersey City 2025-2026",
     "section": "Dashboard: Weather Analysis",
     "text": "Dashboard: Weather Analysis\nWeather measures are connected with Citi Bike demand.\nAnalysis\n\nRides vs temperature\nDaily rides and temperature trend\nRainy-day usage\nSeasonal weather changes\n\nThis can help explain why demand changes throughout the year."
-  },
-  {
-    "objectID": "index.html#final-data-architecture",
-    "href": "index.html#final-data-architecture",
-    "title": "Citi Bike Jersey City 2025-2026",
-    "section": "Final Data Architecture",
-    "text": "Final Data Architecture\nCiti Bike ZIP Files\n        |\nWeather API ---------&gt; Python\n        |               |\nNeighborhood GeoJSON    |\n                        v\n              Data Preparation\n                        |\n                        v\n              Python Analysis\n                        |\n                        v\n              PostgreSQL/PostGIS\n                        |\n                        v\n               Materialized View\n                        |\n                        v\n                    Tableau\n                        |\n                        v\n                Tableau Extract\n                        |\n                        v\n               Interactive Dashboard"
-  },
-  {
-    "objectID": "index.html#what-i-learned",
-    "href": "index.html#what-i-learned",
-    "title": "Citi Bike Jersey City 2025-2026",
-    "section": "What I Learned",
-    "text": "What I Learned\nThis project demonstrates that a dashboard is only the final stage of a much larger analytics workflow.\nMain Lessons\n\nWorking with multiple data sources\nAutomating web data collection\nCleaning large datasets with pandas\nPerforming spatial analysis\nUsing PostgreSQL and PostGIS\nCreating analytical SQL views\nConnecting databases to Tableau\nDesigning dashboard-ready datasets\nBuilding interactive visual analytics"
   },
   {
     "objectID": "index.html#key-takeaway",
